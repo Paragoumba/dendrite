@@ -132,9 +132,17 @@ func writeFile(img image.Image, dst string) (err error) {
 	}
 	defer (func() { err = out.Close() })()
 
-	return jpeg.Encode(out, img, &jpeg.Options{
-		Quality: 85,
-	})
+	switch(img.type){
+	case "jpeg":
+		return jpeg.Encode(out, img, &jpeg.Options{
+			Quality: 85,
+		})
+
+	case "png":
+		return png.Encode(out, img, &png.Options{
+			Quality: 85,
+		})
+	}
 }
 
 // createThumbnail checks if the thumbnail exists, and if not, generates it
@@ -210,8 +218,7 @@ func createThumbnail(
 		MediaMetadata: &types.MediaMetadata{
 			MediaID: mediaMetadata.MediaID,
 			Origin:  mediaMetadata.Origin,
-			// Note: the code currently always creates a JPEG thumbnail
-			ContentType:   types.ContentType("image/jpeg"),
+			ContentType:   types.ContentType("image/" + img.Type),
 			FileSizeBytes: types.FileSizeBytes(stat.Size()),
 		},
 		ThumbnailSize: types.ThumbnailSize{

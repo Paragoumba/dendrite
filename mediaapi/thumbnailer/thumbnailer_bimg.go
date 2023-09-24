@@ -172,8 +172,7 @@ func createThumbnail(
 		MediaMetadata: &types.MediaMetadata{
 			MediaID: mediaMetadata.MediaID,
 			Origin:  mediaMetadata.Origin,
-			// Note: the code currently always creates a JPEG thumbnail
-			ContentType:   types.ContentType("image/jpeg"),
+			ContentType:   types.ContentType("image/" + img.Type),
 			FileSizeBytes: types.FileSizeBytes(stat.Size()),
 		},
 		ThumbnailSize: types.ThumbnailSize{
@@ -213,7 +212,7 @@ func resize(dst types.Path, inImage *bimg.Image, w, h int, crop bool, logger *lo
 	}
 
 	options := bimg.Options{
-		Type:    bimg.JPEG,
+		Type:    inImage.Type,
 		Quality: 85,
 	}
 	if crop {
